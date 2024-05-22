@@ -77,19 +77,21 @@
             <input type="password" class="form-control rounded-3"id="security_answer" name="security_answer" required autocomplete="off" maxlength="20" placeholder="For Password Reset">
             <label for="floatingPassword">Security Answer</label>
           </div>
-           <label for="role" class="form-label">Select Role:</label>
+           <label for="role" class="form-label">&nbsp;Select Role</label>
            <div class="form-floating mb-2">
            <label for="role" class="form-label"></label>
     <select class="form-select form-select-sm rounded-3" aria-label="Small select example" id="role" name="role" required>
-    <option value="Teacher">Teacher</option>
+    <option disabled selected="">Select Role</option>
+      <option value="Teacher">Teacher</option>
     <option value="Student">Student</option>
+   
 </select>
 
           </div> 
           <div>
-            <button class="w-40 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button>
-            <button class="w-40 mb-2 btn btn-lg rounded-3 btn-secondary" type="reset">Clear</button> </div>
-            <a href="/recover" style="text-decoration: none;">Forgot Password ?</a><br>
+            <button class="w-40 mb-2 btn btn-md rounded-1 btn-primary" type="submit">Sign up</button>&nbsp;
+            <button class="w-40 mb-2 btn btn-md rounded-1 btn-secondary" type="reset">Clear</button> </div>
+            <a href="/recover" style="text-decoration: none;">Forgot Password?</a>&nbsp;&nbsp;
             <a href="/admin" style="text-decoration: none;">Admin login</a></div>
         </form>
       </div>
