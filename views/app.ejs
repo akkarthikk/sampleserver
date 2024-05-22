@@ -8,6 +8,7 @@
     <title>Sign up</title>
     <!-- <link rel="stylesheet" href="style/login.css"> --> 
 </head>
+<body style="height: 100vh;">
     <div class="container" style="max-width: 800px;
     padding-top: 20px;
     min-width: 300px;
@@ -44,23 +45,23 @@
     </form> -->
     <div class="modal-dialog" role="document">
     <div class="modal-content rounded-4 shadow">
-      <div class="modal-header p-5 pb-4 border-bottom-0"><h2>Sign Up</h2></div>
+      <div class="modal-header p-5 pb-3 border-bottom-0"><h2>Sign Up</h2></div>
       <div class="modal-body p-5 pt-0">
         <form action="/signup" method="POST">
-              <div class="form-floating mb-3">
+              <div class="form-floating mb-2">
             <input type="text" class="form-control rounded-3" id="name"name="name" required maxlength="20" autocomplete="off" placeholder="Name">
             <label for="floatingInput">Name</label>
           </div>
-          <div class="form-floating mb-3">
+          <div class="form-floating mb-2">
             <input type="email" class="form-control rounded-3" id="email" name="email" required maxlength="30" autocomplete="off" placeholder="@example.com">
             <label for="floatingInput">Email address</label>
           </div>
-          <div class="form-floating mb-3">
+          <div class="form-floating mb-2">
             <input type="password" class="form-control rounded-3" id="password" name="password" required maxlength="8" placeholder="Password">
             <label for="floatingInput">Password</label>
           </div>
           
-          <div class="form-floating mb-3">
+          <div class="form-floating mb-2">
             <label for="floatingInput"></label>
             <select class="form-select form-select-sm rounded-3" aria-label="Small select example" id="security_question" name="security_question" required>
                
@@ -71,11 +72,11 @@
                 <option value="What is your Vehicle Number?">What is your Vehicle Number?</option>
             </select>
           </div> 
-          <div class="form-floating mb-3">
+          <div class="form-floating mb-2">
             <input type="password" class="form-control rounded-3"id="security_answer" name="security_answer" required autocomplete="off" maxlength="20" placeholder="For Password Reset">
             <label for="floatingPassword">Security Answer</label>
           </div>
-           <div class="form-floating mb-3">
+           <div class="form-floating mb-2">
            <label for="role" class="form-label"></label>
     <select class="form-select form-select-sm rounded-3" aria-label="Small select example" id="role" name="role" required>
     <option>Select Your Role</option>
