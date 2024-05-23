@@ -8,6 +8,22 @@
     <title>Sign up</title>
     <!-- <link rel="stylesheet" href="style/login.css"> --> 
 </head>
+<style>
+  input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        
+        input[type="radio"]:focus { 
+            outline-offset: 3px; 
+        }
+
+        
+        input[type="radio"]:focus + label {
+            color: #005FCC;
+            font-weight: bold; 
+        }
+</style>
 <body>
     <div class="container" style="max-width: 600px;
     padding-top: 20px;
@@ -89,7 +105,14 @@
 </select>
 
           </div>  -->
-          
+   <div class="floating-label">
+            <div class="radio-group">
+                <input type="radio" id="Student" name="role" value="Student" required>
+                <label for="Student">Student</label>&nbsp;
+                <input type="radio" id="Teacher" name="role" value="Teacher" required>
+                <label for="Teacher">Teacher</label>
+            </div>
+        </div>
           <div>
             <button class="w-40 mb-2 btn btn-md rounded-1 btn-primary" type="submit">Sign up</button>&nbsp;
             <button class="w-40 mb-2 btn btn-md rounded-1 btn-secondary" type="reset">Clear</button> </div>
