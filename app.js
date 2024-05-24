@@ -223,8 +223,8 @@
 //     }
 // });
 
-        
-  
+
+
 
 // app.get('/recover', (req, res) => {
 //     res.render("recover.ejs");
@@ -254,7 +254,7 @@
 //                 const user = result.rows[0];
 //                 const storedPassword = user.password;
 
-                
+
 //                 if (password === storedPassword) {
 //                     return cb(null, user);
 //                 } else {
@@ -452,7 +452,7 @@ app.post("/signup", async (req, res) => {
                 if (err) {
                     return res.status(500).send("Login error");
                 }
-                res.redirect("/dashboard");
+                res.redirect("/signupsuccess");
             });
         }
     } catch (error) {
@@ -460,6 +460,10 @@ app.post("/signup", async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
+
+app.get("/signupsuccess", (req, res) => {
+    res.render("success.ejs")
+})
 
 app.get("/recover", (req, res) => {
     res.render("recover.ejs");
@@ -486,25 +490,19 @@ app.post("/recover", (req, res) => {
 });
 
 passport.use(
-    
-    new Strategy(async function verify(email, password, cb) {
-        const p = req.body.password
+    new Strategy({ usernameField: 'email' }, async function verify(email, password, cb) {
         try {
-            const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+            const result = await db.query("SELECT * FROM users WHERE email = $1 AND password = $2", [email, password]);
 
             if (result.rows.length > 0) {
                 const user = result.rows[0];
-                if (p === user.password) {
-                    return done(null, user);
-                } else {
-                    return done(null, false, { message: "Incorrect email or password." });
-                }
+                return cb(null, user);
             } else {
-                return done(null, false, { message: "Incorrect email or password." });
+                return cb(null, false, { message: "Incorrect email or password." });
             }
         } catch (err) {
             console.error("Error during authentication:", err);
-            return done(err);
+            return cb(err);
         }
     })
 );
