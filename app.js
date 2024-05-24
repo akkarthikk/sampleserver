@@ -296,7 +296,7 @@ app.use(
         secret: "TOPSECRETWORD",
         resave: false,
         saveUninitialized: true,
-        cookie: { maxAge: 10000 }
+        cookie: { maxAge: 100000 }
     })
 );
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -407,6 +407,14 @@ app.get("/dashboard", (req, res) => {
         res.redirect("/login");
     }
 });
+app.get("/logout", (req, res) => {
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/");
+    });
+});
 
 app.post("/signup", async (req, res) => {
     const { email, name, password, security_question, security_answer, role } = req.body;
@@ -460,7 +468,8 @@ app.post("/recover", (req, res) => {
 
 passport.use(
     "local",
-    new Strategy(async function verify(username, password, cb) {
+    new Strategy(async function verify(email, password, cb) {
+        console.log(email);
         try {
             const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
             if (result.rows.length > 0) {
