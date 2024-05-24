@@ -288,16 +288,18 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import session from "express-session";
 import GoogleStrategy from "passport-google-oauth2";
+import env from "dotenv";
+env.config()
 
 const app = express();
 const port = 3000;
 
 app.use(
     session({
-        secret: "TOPSECRETWORD",
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
-        cookie: { maxAge: 100000 }
+        cookie: { maxAge: 1000000 }
     })
 );
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -307,11 +309,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "owner",
-    password: "qwertyuiop",
-    port: 5432,
+    user: process.env.PG_USER,
+    host: process.env.PG_HOST,
+    database: process.envPG_DATABASE,
+    password: process.env.PG_PASSWORD,
+    port: PG_PORT,
 });
 db.connect((err) => {
     if (err) {
@@ -511,10 +513,10 @@ passport.use(
     "google",
     new GoogleStrategy(
         {
-            clientID: "1007597786966-h1pm3n448at7gnvi4ttcmg2nkjvuacim.apps.googleusercontent.com",
-            clientSecret: "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",
-            callbackURL: "http://localhost:3000/auth/google/dashboard",
-            userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: process.env.GOOGLE_callbackURL,
+            userProfileURL: process.env.GOOGLE_userProfileURL,
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {
