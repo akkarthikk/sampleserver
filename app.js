@@ -302,6 +302,7 @@ app.use(
         cookie: { maxAge: 1000000 }
     })
 );
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
@@ -334,17 +335,6 @@ db.connect((err) => {
                 .catch((error) => {
                     console.error("Failed to reconnect to the database:", error);
                 });
-        }
-    });
-});
-
-app.get("/get", (req, res) => {
-    db.query("SELECT * FROM users", (err, result) => {
-        if (err) {
-            console.error("Error fetching users", err);
-            res.status(500).json({ error: "User not found!" });
-        } else {
-            res.json(result.rows);
         }
     });
 });
@@ -405,7 +395,7 @@ app.post(
     "/login",
     passport.authenticate("local", {
         successRedirect: "/dashboard",
-        failureRedirect: "/",
+        failureRedirect: "/login",
     })
 );
 
@@ -422,7 +412,7 @@ app.get("/logout", (req, res) => {
         if (err) {
             return next(err);
         }
-        res.redirect("/");
+        res.redirect("/login");
     });
 });
 app.get(
@@ -440,6 +430,9 @@ app.get(
     })
 );
 
+app.get("/signup", (req, res) => {
+    res.render("app.ejs");
+})
 app.post("/signup", async (req, res) => {
     const { email, name, password, security_question, security_answer, role } = req.body;
 
@@ -447,7 +440,7 @@ app.post("/signup", async (req, res) => {
         const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
         if (checkResult.rows.length > 0) {
-            return res.redirect("/login");
+            return res.redirect("/emailexist");
         } else {
             await db.query(
                 "INSERT INTO users (email, name, password, security_question, security_answer, role) VALUES ($1, $2, $3, $4, $5, $6)",
@@ -465,7 +458,9 @@ app.post("/signup", async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
-
+app.get("/emailexist", (req, res) => {
+    res.render("emailexist.ejs");
+})
 app.get("/signupsuccess", (req, res) => {
     res.render("success.ejs")
 })
