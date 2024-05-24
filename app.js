@@ -5,16 +5,16 @@ import pg from "pg";
 const app = express();
 const port = 3000;
 app.use(express.static('public'));
-const db = new pg.Client({
-    connectionString: 'postgres://hjjzniqp:eYx43GLcFLNibenQB3GqhXZodJwLHx9l@rain.db.elephantsql.com/hjjzniqp',
-});
 // const db = new pg.Client({
-//     user: "postgres",
-//     host: "localhost",
-//     database: "owner",
-//     password: "qwertyuiop",
-//     port: 5432,
+//     connectionString: 'postgres://hjjzniqp:eYx43GLcFLNibenQB3GqhXZodJwLHx9l@rain.db.elephantsql.com/hjjzniqp',
 // });
+const db = new pg.Client({
+    user: "postgres",
+    host: "localhost",
+    database: "owner",
+    password: "qwertyuiop",
+    port: 5432,
+});
 db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -58,41 +58,41 @@ app.get('/', (req, res) => {
 app.get('/admin', (req, res) => {
     res.render('admin.ejs');
 });
-app.post('/delete', (req, res) => {
-    const email = req.body['email'];
-    const password = req.body['password'];
-    try {
-        db.query("DELETE FROM users")
-            .then(result => {
-                res.json({ message: "Users deleted successfully" });
-            })
-            .catch(error => {
-                console.error("Error deleting user:", error);
-                res.status(500).json({ error: "Internal server error" });
-            });
-    } catch (error) {
-        console.error("Error processing request:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+// app.post('/delete', (req, res) => {
+//     const email = req.body['email'];
+//     const password = req.body['password'];
+//     try {
+//         db.query("DELETE FROM users")
+//             .then(result => {
+//                 res.json({ message: "Users deleted successfully" });
+//             })
+//             .catch(error => {
+//                 console.error("Error deleting user:", error);
+//                 res.status(500).json({ error: "Internal server error" });
+//             });
+//     } catch (error) {
+//         console.error("Error processing request:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// });
 
-app.post('/manage', (req, res) => {
-    const email = req.body['email'];
-    const password = req.body['password'];
-    try {
-        db.query("DELETE FROM users WHERE email = $1 AND password = $2", [email, password])
-            .then(result => {
-                res.json({ message: "User deleted successfully" });
-            })
-            .catch(error => {
-                console.error("Error deleting user:", error);
-                res.status(500).json({ error: "Internal server error" });
-            });
-    } catch (error) {
-        console.error("Error processing request:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+// app.post('/manage', (req, res) => {
+//     const email = req.body['email'];
+//     const password = req.body['password'];
+//     try {
+//         db.query("DELETE FROM users WHERE email = $1 AND password = $2", [email, password])
+//             .then(result => {
+//                 res.json({ message: "User deleted successfully" });
+//             })
+//             .catch(error => {
+//                 console.error("Error deleting user:", error);
+//                 res.status(500).json({ error: "Internal server error" });
+//             });
+//     } catch (error) {
+//         console.error("Error processing request:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// });
 app.post('/adminlogin', (req, res) => {
     const email = req.body['email'];
     const password = req.body['password'];
@@ -127,6 +127,9 @@ app.get('/adminusers', (req, res) => {
 
 app.get('/login', (req, res) => {
     res.render("login.ejs");
+});
+app.post('/login', (req, res) => {
+    res.render("dashboard.ejs");
 });
 
 // Handle form submission
