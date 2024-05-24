@@ -392,13 +392,11 @@ app.get("/login", (req, res) => {
     res.render("login.ejs");
 });
 
-app.post(
-    "/login",
-    passport.authenticate("local", {
-        successRedirect: "/dashboard",
-        failureRedirect: "/login",
-    })
-);
+app.post('/login',
+    passport.authenticate('local', { failureRedirect: '/login' }),
+    function (req, res) {
+        res.redirect('/dashboard');
+    });
 
 app.get("/dashboard", (req, res) => {
     if (req.isAuthenticated()) {
@@ -467,9 +465,9 @@ app.post("/recover", (req, res) => {
 });
 
 passport.use(
-    "local",
+    
     new Strategy(async function verify(email, password, cb) {
-        console.log(email);
+        
         try {
             const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
             if (result.rows.length > 0) {
@@ -490,20 +488,11 @@ passport.use(
 );
 
 passport.serializeUser((user, cb) => {
-    cb(null, user.email);
+    cb(null, user);
 });
 
-passport.deserializeUser(async (email, cb) => {
-    try {
-        const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-        if (result.rows.length > 0) {
-            cb(null, result.rows[0]);
-        } else {
-            cb(new Error("User not found"));
-        }
-    } catch (err) {
-        cb(err);
-    }
+passport.deserializeUser((user, cb) => {
+    cb(null, user);
 });
 
 app.listen(port, () => {
