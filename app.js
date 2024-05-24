@@ -287,6 +287,7 @@ import pg from "pg";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import session from "express-session";
+import GoogleStrategy from "passport-google-oauth2";
 
 const app = express();
 const port = 3000;
@@ -301,6 +302,7 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -392,19 +394,22 @@ app.get("/login", (req, res) => {
     res.render("login.ejs");
 });
 
-app.post('/login',
-    passport.authenticate('local', { failureRedirect: '/login' }),
-    function (req, res) {
-        res.redirect('/dashboard');
-    });
+app.post(
+    "/login",
+    passport.authenticate("local", {
+        successRedirect: "/dashboard",
+        failureRedirect: "/",
+    })
+);
 
 app.get("/dashboard", (req, res) => {
     if (req.isAuthenticated()) {
-        res.render("dashboard.ejs");
+        res.render("dashboard.ejs", { user: req.user });
     } else {
         res.redirect("/login");
     }
 });
+
 app.get("/logout", (req, res) => {
     req.logout(function (err) {
         if (err) {
@@ -413,6 +418,20 @@ app.get("/logout", (req, res) => {
         res.redirect("/");
     });
 });
+app.get(
+    "/auth/google",
+    passport.authenticate("google", {
+        scope: ["profile", "email"],
+    })
+);
+
+app.get(
+    "/auth/google/dashboard",
+    passport.authenticate("google", {
+        successRedirect: "/dashboard",
+        failureRedirect: "/login",
+    })
+);
 
 app.post("/signup", async (req, res) => {
     const { email, name, password, security_question, security_answer, role } = req.body;
@@ -467,26 +486,57 @@ app.post("/recover", (req, res) => {
 passport.use(
     
     new Strategy(async function verify(email, password, cb) {
-        
+        const p = req.body.password
         try {
             const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+
             if (result.rows.length > 0) {
                 const user = result.rows[0];
-                if (password === user.password) {
-                    return cb(null, user);
+                if (p === user.password) {
+                    return done(null, user);
                 } else {
-                    return cb(null, false, { message: "Incorrect email or password." });
+                    return done(null, false, { message: "Incorrect email or password." });
                 }
             } else {
-                return cb(null, false, { message: "Incorrect email or password." });
+                return done(null, false, { message: "Incorrect email or password." });
             }
         } catch (err) {
             console.error("Error during authentication:", err);
-            return cb(err);
+            return done(err);
         }
     })
 );
 
+passport.use(
+    "google",
+    new GoogleStrategy(
+        {
+            clientID: "33065838806-fsmm67ap6an03q7uv1gimcontcl1fb59.apps.googleusercontent.com",
+            clientSecret: "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",
+            callbackURL: "http://localhost:3000/auth/google/dashboard",
+            userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+        },
+        async (accessToken, refreshToken, profile, cb) => {
+            try {
+                const result = await db.query("SELECT * FROM users WHERE email = $1", [
+                    profile.email,
+                ]);
+                const name = profile.displayName;
+                if (result.rows.length === 0) {
+                    const newUser = await db.query(
+                        "INSERT INTO users (name,email, password,security_question,security_answer) VALUES ($1, $2,$3,$4,$5)",
+                        [name, profile.email, "google", "google", "google"]
+                    );
+                    return cb(null, newUser.rows[0]);
+                } else {
+                    return cb(null, result.rows[0]);
+                }
+            } catch (err) {
+                return cb(err);
+            }
+        }
+    )
+);
 passport.serializeUser((user, cb) => {
     cb(null, user);
 });
