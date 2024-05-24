@@ -311,9 +311,9 @@ app.use(passport.session());
 const db = new pg.Client({
     user: process.env.PG_USER,
     host: process.env.PG_HOST,
-    database: process.envPG_DATABASE,
+    database: process.env.PG_DATABASE,
     password: process.env.PG_PASSWORD,
-    port: PG_PORT,
+    port: process.env.PG_PORT,
 });
 db.connect((err) => {
     if (err) {
