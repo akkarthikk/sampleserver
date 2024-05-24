@@ -1,13 +1,309 @@
+// import express from "express";
+// import bodyParser from "body-parser";
+// import pg from "pg";
+// import passport from "passport";
+// import { Strategy } from "passport-local";
+// import session from "express-session";
+
+// const app = express();
+// const port = 3000;
+// app.use(
+//     session({
+//         secret: "TOPSECRETWORD",
+//         resave: false,
+//         saveUninitialized: true,
+//     })
+// );
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(express.static("public"));
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// // const db = new pg.Client({
+// //     connectionString: 'postgres://hjjzniqp:eYx43GLcFLNibenQB3GqhXZodJwLHx9l@rain.db.elephantsql.com/hjjzniqp',
+// // });
+// const db = new pg.Client({
+//     user: "postgres",
+//     host: "localhost",
+//     database: "owner",
+//     password: "qwertyuiop",
+//     port: 5432,
+// });
+// db.connect();
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+
+// db.connect((err) => {
+//     if (err) {
+//         console.error('Error connecting to the database', err);
+//     } else {
+//         console.log('Connected to the database');
+//     }
+
+//     db.on('error', (err) => {
+//         console.error('Database connection error:', err);
+//         if (err.code === 'ECONNRESET' || err.code === 'EPIPE') {
+//             console.log('Attempting to reconnect to the database...');
+//             db.connect()
+//                 .then(() => {
+//                     console.log('Reconnected to the database successfully');
+//                 })
+//                 .catch(error => {
+//                     console.error('Failed to reconnect to the database:', error);
+//                 });
+//         }
+//     });
+// });
+
+// app.get('/get', (req, res) => {
+//     db.query('SELECT * FROM users', (err, result) => {
+//         if (err) {
+//             console.error('Error fetching users', err);
+//             res.status(500).json({ error: 'User not found!' });
+//         } else {
+//             res.json(result.rows);
+//         }
+//     });
+// });
+
+// app.get('/', (req, res) => {
+//     res.render('app.ejs');
+// });
+// app.get('/admin', (req, res) => {
+//     res.render('admin.ejs');
+// });
+// // app.post('/delete', (req, res) => {
+// //     const email = req.body['email'];
+// //     const password = req.body['password'];
+// //     try {
+// //         db.query("DELETE FROM users")
+// //             .then(result => {
+// //                 res.json({ message: "Users deleted successfully" });
+// //             })
+// //             .catch(error => {
+// //                 console.error("Error deleting user:", error);
+// //                 res.status(500).json({ error: "Internal server error" });
+// //             });
+// //     } catch (error) {
+// //         console.error("Error processing request:", error);
+// //         res.status(500).json({ error: "Internal server error" });
+// //     }
+// // });
+
+// // app.post('/manage', (req, res) => {
+// //     const email = req.body['email'];
+// //     const password = req.body['password'];
+// //     try {
+// //         db.query("DELETE FROM users WHERE email = $1 AND password = $2", [email, password])
+// //             .then(result => {
+// //                 res.json({ message: "User deleted successfully" });
+// //             })
+// //             .catch(error => {
+// //                 console.error("Error deleting user:", error);
+// //                 res.status(500).json({ error: "Internal server error" });
+// //             });
+// //     } catch (error) {
+// //         console.error("Error processing request:", error);
+// //         res.status(500).json({ error: "Internal server error" });
+// //     }
+// // });
+// app.post('/adminlogin', (req, res) => {
+//     const email = req.body['email'];
+//     const password = req.body['password'];
+//     const admin = "admin";
+//     db.query("SELECT * FROM users WHERE email = $1 AND password = $2 AND role = $3", [email, password, admin])
+//         .then(result => {
+//             if (result.rows.length > 0) {
+//                 res.render("admindashboard.ejs", { users: result.rows });
+//             } else {
+//                 res.send("you are not admin");
+//             }
+//         })
+//         .catch(err => {
+//             console.error("Error executing query:", err);
+//             res.status(500).json({ error: "Internal server error" });
+//         });
+// });
+// app.get('/adminusers', (req, res) => {
+//     db.query("SELECT * FROM users")
+//         .then(result => {
+//             if (result.rows.length > 0) {
+//                 res.render("admin_users.ejs", { users: result.rows });
+//             } else {
+//                 res.json({ message: "No user found" });
+//             }
+//         })
+//         .catch(err => {
+//             console.error("Error executing query:", err);
+//             res.status(500).json({ error: "Internal server error" });
+//         });
+// });
+
+// app.get('/login', (req, res) => {
+//     res.render("login.ejs");
+// });
+// app.post("/login",passport.authenticate("local", {
+//         successRedirect: "/dashboard",
+//         failureRedirect: "/login",
+//     })
+// );
+
+// app.get("/dashboard", (req, res) => {
+//     if (req.isAuthenticated()) {
+//         res.render("dashboard.ejs");
+//     } else {
+//         res.redirect("/login");
+//     }
+// });
+
+
+// // Handle form submission
+// // app.post('/signup', async (req, res) => {
+// //     const email = req.body['email'];
+// //     const name = req.body['name'];
+// //     const password = req.body['password'];
+// //     const question = req.body['security_question'];
+// //     const answer = req.body['security_answer'];
+// //     const role = req.body['role'];
+
+// //     // try {
+// //     //     db.query("INSERT INTO users (email,name,password,security_question,security_answer) VALUES ($1, $2,$3,$4,$5)", [email, name, password, question, answer])
+// //     //         .then(result => {
+// //     //             res.render("success.ejs");
+// //     //         })
+// //     //         .catch(error => {
+// //     //             console.error(error);
+// //     //             res.status(500).send({
+// //     //                 message: 'Error inserting data into database',
+// //     //                 error: error.message
+// //     //             });
+// //     //         });
+// //     try {
+// //         const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
+// //             email,
+// //         ]);
+// //         if (checkResult.rows.length > 0) {
+// //             res.send("Email already exists. Try logging in.");
+// //         } else {
+// //             db.query("INSERT INTO users (email,name,password,security_question,security_answer,role) VALUES ($1, $2,$3,$4,$5,$6)", [email, name, password, question, answer,role])
+// //             res.render("success.ejs");
+// //         }
+// //     } catch (err) {
+// //         console.log(err);
+// //     }
+// // });
+// app.post("/signup", async (req, res) => {
+//     const email = req.body['email'];
+//         const name = req.body['name'];
+//         const password = req.body['password'];
+//         const question = req.body['security_question'];
+//         const answer = req.body['security_answer'];
+//         const role = req.body['role'];
+
+//     try {
+//         const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+
+//         if (checkResult.rows.length > 0) {
+//             return res.redirect("/login");
+//         } else {
+//             const result = await db.query(
+//                 "INSERT INTO users (email,name,password,security_question,security_answer) VALUES ($1, $2,$3,$4,$5)", [email, name, password, question, answer]
+//             );
+//             const user = result.rows[0];
+//             req.login(user, (err) => {
+//                 if (err) {
+//                     return res.status(500).send('Login error');
+//                 }
+//                 res.redirect("/dashboard");
+//             });
+//         }
+//     } catch (error) {
+//         console.error('Error during signup:', error);
+//         res.status(500).send('Internal server error');
+//     }
+// });
+
+        
+  
+
+// app.get('/recover', (req, res) => {
+//     res.render("recover.ejs");
+// });
+// app.post('/recover', (req, res) => {
+//     const email = req.body['email'];
+//     const answer = req.body['s_answer'];
+//     db.query("SELECT name,email, password FROM users WHERE email = $1 AND security_answer = $2", [email, answer], (err, result) => {
+//         if (err) {
+//             console.error("Error executing query:", err);
+//             res.status(500).json({ error: "Internal server error" });
+//         } else {
+//             if (result.rows.length > 0) {
+//                 res.render("users.ejs", { users: result.rows });
+//             } else {
+//                 res.send("No user Found or Wrong Password Entered!");
+//             }
+//         }
+//     });
+// });
+
+// passport.use(
+//     new Strategy(async function verify(email, password, cb) {
+//         try {
+//             const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+//             if (result.rows.length > 0) {
+//                 const user = result.rows[0];
+//                 const storedPassword = user.password;
+
+                
+//                 if (password === storedPassword) {
+//                     return cb(null, user);
+//                 } else {
+//                     return cb(null, false, { message: 'Incorrect email or password.' });
+//                 }
+//             } else {
+//                 return cb(null, false, { message: 'Incorrect email or password.' });
+//             }
+//         } catch (err) {
+//             console.error("Error during authentication:", err);
+//             return cb(err);
+//         }
+//     })
+// );
+
+// passport.serializeUser((user, cb) => {
+//     cb(null, user);
+// });
+// passport.deserializeUser((user, cb) => {
+//     cb(null, user);
+// });
+
+// app.listen(port, () => {
+//     console.log(`Server is running on port http://localhost:${port}`);
+// });
+
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import passport from "passport";
+import { Strategy } from "passport-local";
+import session from "express-session";
 
 const app = express();
 const port = 3000;
-app.use(express.static('public'));
-// const db = new pg.Client({
-//     connectionString: 'postgres://hjjzniqp:eYx43GLcFLNibenQB3GqhXZodJwLHx9l@rain.db.elephantsql.com/hjjzniqp',
-// });
+
+app.use(
+    session({
+        secret: "TOPSECRETWORD",
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 10000 }
+    })
+);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(passport.initialize());
+app.use(passport.session());
+
 const db = new pg.Client({
     user: "postgres",
     host: "localhost",
@@ -15,180 +311,192 @@ const db = new pg.Client({
     password: "qwertyuiop",
     port: 5432,
 });
-db.connect();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
 db.connect((err) => {
     if (err) {
-        console.error('Error connecting to the database', err);
+        console.error("Error connecting to the database", err);
     } else {
-        console.log('Connected to the database');
+        console.log("Connected to the database");
     }
 
-    db.on('error', (err) => {
-        console.error('Database connection error:', err);
-        if (err.code === 'ECONNRESET' || err.code === 'EPIPE') {
-            console.log('Attempting to reconnect to the database...');
+    db.on("error", (err) => {
+        console.error("Database connection error:", err);
+        if (err.code === "ECONNRESET" || err.code === "EPIPE") {
+            console.log("Attempting to reconnect to the database...");
             db.connect()
                 .then(() => {
-                    console.log('Reconnected to the database successfully');
+                    console.log("Reconnected to the database successfully");
                 })
-                .catch(error => {
-                    console.error('Failed to reconnect to the database:', error);
+                .catch((error) => {
+                    console.error("Failed to reconnect to the database:", error);
                 });
         }
     });
 });
 
-app.get('/get', (req, res) => {
-    db.query('SELECT * FROM users', (err, result) => {
+app.get("/get", (req, res) => {
+    db.query("SELECT * FROM users", (err, result) => {
         if (err) {
-            console.error('Error fetching users', err);
-            res.status(500).json({ error: 'User not found!' });
+            console.error("Error fetching users", err);
+            res.status(500).json({ error: "User not found!" });
         } else {
             res.json(result.rows);
         }
     });
 });
 
-app.get('/', (req, res) => {
-    res.render('app.ejs');
+app.get("/", (req, res) => {
+    res.render("app.ejs");
 });
-app.get('/admin', (req, res) => {
-    res.render('admin.ejs');
-});
-// app.post('/delete', (req, res) => {
-//     const email = req.body['email'];
-//     const password = req.body['password'];
-//     try {
-//         db.query("DELETE FROM users")
-//             .then(result => {
-//                 res.json({ message: "Users deleted successfully" });
-//             })
-//             .catch(error => {
-//                 console.error("Error deleting user:", error);
-//                 res.status(500).json({ error: "Internal server error" });
-//             });
-//     } catch (error) {
-//         console.error("Error processing request:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// });
 
-// app.post('/manage', (req, res) => {
-//     const email = req.body['email'];
-//     const password = req.body['password'];
-//     try {
-//         db.query("DELETE FROM users WHERE email = $1 AND password = $2", [email, password])
-//             .then(result => {
-//                 res.json({ message: "User deleted successfully" });
-//             })
-//             .catch(error => {
-//                 console.error("Error deleting user:", error);
-//                 res.status(500).json({ error: "Internal server error" });
-//             });
-//     } catch (error) {
-//         console.error("Error processing request:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// });
-app.post('/adminlogin', (req, res) => {
-    const email = req.body['email'];
-    const password = req.body['password'];
+app.get("/admin", (req, res) => {
+    res.render("admin.ejs");
+});
+
+app.post("/adminlogin", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
     const admin = "admin";
-    db.query("SELECT * FROM users WHERE email = $1 AND password = $2 AND role = $3", [email, password, admin])
-        .then(result => {
+    db.query(
+        "SELECT * FROM users WHERE email = $1 AND password = $2 AND role = $3",
+        [email, password, admin]
+    )
+        .then((result) => {
             if (result.rows.length > 0) {
                 res.render("admindashboard.ejs", { users: result.rows });
             } else {
-                res.send("you are not admin");
+                res.send("You are not admin");
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error("Error executing query:", err);
             res.status(500).json({ error: "Internal server error" });
         });
 });
-app.get('/adminusers', (req, res) => {
+
+app.get("/adminusers", (req, res) => {
     db.query("SELECT * FROM users")
-        .then(result => {
+        .then((result) => {
             if (result.rows.length > 0) {
                 res.render("admin_users.ejs", { users: result.rows });
             } else {
                 res.json({ message: "No user found" });
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error("Error executing query:", err);
             res.status(500).json({ error: "Internal server error" });
         });
 });
 
-app.get('/login', (req, res) => {
+app.get("/login", (req, res) => {
     res.render("login.ejs");
 });
-app.post('/login', (req, res) => {
-    res.render("dashboard.ejs");
-});
 
-// Handle form submission
-app.post('/signup', async (req, res) => {
-    const email = req.body['email'];
-    const name = req.body['name'];
-    const password = req.body['password'];
-    const question = req.body['security_question'];
-    const answer = req.body['security_answer'];
-    const role = req.body['role'];
+app.post(
+    "/login",
+    passport.authenticate("local", {
+        successRedirect: "/dashboard",
+        failureRedirect: "/login",
+    })
+);
 
-    // try {
-    //     db.query("INSERT INTO users (email,name,password,security_question,security_answer) VALUES ($1, $2,$3,$4,$5)", [email, name, password, question, answer])
-    //         .then(result => {
-    //             res.render("success.ejs");
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //             res.status(500).send({
-    //                 message: 'Error inserting data into database',
-    //                 error: error.message
-    //             });
-    //         });
-    try {
-        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
-            email,
-        ]);
-        if (checkResult.rows.length > 0) {
-            res.send("Email already exists. Try logging in.");
-        } else {
-            db.query("INSERT INTO users (email,name,password,security_question,security_answer,role) VALUES ($1, $2,$3,$4,$5,$6)", [email, name, password, question, answer,role])
-            res.render("success.ejs");
-        }
-    } catch (err) {
-        console.log(err);
+app.get("/dashboard", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("dashboard.ejs");
+    } else {
+        res.redirect("/login");
     }
 });
 
+app.post("/signup", async (req, res) => {
+    const { email, name, password, security_question, security_answer, role } = req.body;
 
-app.get('/recover', (req, res) => {
+    try {
+        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+
+        if (checkResult.rows.length > 0) {
+            return res.redirect("/login");
+        } else {
+            await db.query(
+                "INSERT INTO users (email, name, password, security_question, security_answer, role) VALUES ($1, $2, $3, $4, $5, $6)",
+                [email, name, password, security_question, security_answer, role]
+            );
+            req.login({ email, name, role }, (err) => {
+                if (err) {
+                    return res.status(500).send("Login error");
+                }
+                res.redirect("/dashboard");
+            });
+        }
+    } catch (error) {
+        console.error("Error during signup:", error);
+        res.status(500).send("Internal server error");
+    }
+});
+
+app.get("/recover", (req, res) => {
     res.render("recover.ejs");
 });
-app.post('/recover', (req, res) => {
-    const email = req.body['email'];
-    const answer = req.body['s_answer'];
-    db.query("SELECT name,email, password FROM users WHERE email = $1 AND security_answer = $2", [email, answer], (err, result) => {
-        if (err) {
-            console.error("Error executing query:", err);
-            res.status(500).json({ error: "Internal server error" });
-        } else {
-            if (result.rows.length > 0) {
-                res.render("users.ejs", { users: result.rows });
+
+app.post("/recover", (req, res) => {
+    const { email, s_answer } = req.body;
+    db.query(
+        "SELECT name, email, password FROM users WHERE email = $1 AND security_answer = $2",
+        [email, s_answer],
+        (err, result) => {
+            if (err) {
+                console.error("Error executing query:", err);
+                res.status(500).json({ error: "Internal server error" });
             } else {
-                res.send("No user Found or Wrong Password Entered!");
+                if (result.rows.length > 0) {
+                    res.render("users.ejs", { users: result.rows });
+                } else {
+                    res.send("No user Found or Wrong Password Entered!");
+                }
             }
         }
-    });
-});
-app.listen(port, () => {
-    console.log(`Server is running on port http://localhost:${port}`);
+    );
 });
 
+passport.use(
+    "local",
+    new Strategy(async function verify(username, password, cb) {
+        try {
+            const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+            if (result.rows.length > 0) {
+                const user = result.rows[0];
+                if (password === user.password) {
+                    return cb(null, user);
+                } else {
+                    return cb(null, false, { message: "Incorrect email or password." });
+                }
+            } else {
+                return cb(null, false, { message: "Incorrect email or password." });
+            }
+        } catch (err) {
+            console.error("Error during authentication:", err);
+            return cb(err);
+        }
+    })
+);
+
+passport.serializeUser((user, cb) => {
+    cb(null, user.email);
+});
+
+passport.deserializeUser(async (email, cb) => {
+    try {
+        const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        if (result.rows.length > 0) {
+            cb(null, result.rows[0]);
+        } else {
+            cb(new Error("User not found"));
+        }
+    } catch (err) {
+        cb(err);
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
