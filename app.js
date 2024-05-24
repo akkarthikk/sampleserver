@@ -511,8 +511,8 @@ passport.use(
     "google",
     new GoogleStrategy(
         {
-            clientID: "33065838806-fsmm67ap6an03q7uv1gimcontcl1fb59.apps.googleusercontent.com",
-            clientSecret: "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",
+            clientID: "1007597786966-h1pm3n448at7gnvi4ttcmg2nkjvuacim.apps.googleusercontent.com",
+            clientSecret: "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",
             callbackURL: "http://localhost:3000/auth/google/dashboard",
             userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
         },
