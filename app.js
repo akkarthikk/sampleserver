@@ -315,6 +315,7 @@ const db = new pg.Client({
     password: process.env.PG_PASSWORD,
     port: process.env.PG_PORT,
 });
+
 db.connect((err) => {
     if (err) {
         console.error("Error connecting to the database", err);
@@ -349,7 +350,11 @@ app.get("/get", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.render("app.ejs");
+    if (req.isAuthenticated()) {
+        res.render("dashboard.ejs", { user: req.user });
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/admin", (req, res) => {
