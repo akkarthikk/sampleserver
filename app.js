@@ -473,6 +473,7 @@ app.get("/recover", (req, res) => {
     res.render("recover.ejs");
 });
 
+
 app.post("/recover", (req, res) => {
     const { email, s_answer } = req.body;
     db.query(
