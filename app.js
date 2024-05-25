@@ -517,7 +517,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://sampleserver-fkld.onrender.com//auth/google",
+            callbackURL: "https://sampleserver-fkld.onrender.com//auth/google/dashboard",
             userProfileURL: process.env.GOOGLE_userProfileURL,
         },
         async (accessToken, refreshToken, profile, cb) => {
