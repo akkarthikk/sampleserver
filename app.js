@@ -318,7 +318,7 @@ app.use(passport.session());
 //     port: process.env.PG_PORT,
 // });
 const db = new pg.Client({
-     connectionString: process.env.PG_STR,
+    connectionString: process.env.PG_STR,
 });
 
 db.connect((err) => {
@@ -517,7 +517,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://sampleserver-fkld.onrender.com//auth/google/dashboard",
+            callbackURL: "https://sampleserver-fkld.onrender.com/auth/google/dashboard",
             userProfileURL: process.env.GOOGLE_userProfileURL,
         },
         async (accessToken, refreshToken, profile, cb) => {
